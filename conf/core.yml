@@ -1,0 +1,34 @@
+#YAML格式化配置
+
+name: check_time
+value: 45
+---
+name: init_server
+value: 127.0.0.1:2181
+---
+name: zookeeper_manager_address
+value: 192.168.0.115:2181
+---
+name: task_urls_num
+value: 200
+---
+name: zk_session_timeout
+value: 40000
+---
+name: hdfs_system_path
+value: default
+---
+name: tomcat_heart_beat
+value: 5
+---
+name: worker_heart_beat
+value: 15
+---
+name: local_port
+value: 22000
+---
+name: local_shell_port
+value: 22001
+---
+name: balance_server_port
+value: 8081
