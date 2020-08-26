@@ -1,0 +1,165 @@
+#!/bin/bash
+version=1.0
+
+max_stop_time=10
+
+CLAND_PATH=""
+for i in "$CLAND_HOME"/lib/*.jar
+do
+    CLAND_PATH="$i:$CLAND_PATH"
+done
+CLAND_PATH=$CLAND_HOME/cland.jar:$CLAND_PATH
+export CLAND_CONF_PATH=$CLAND_HOME/conf
+
+function print_usage(){
+  echo "Usage: "
+  echo "        cland [COMMAND] [OPTIONS]"
+  echo "COMMAND:"
+  echo "        -v                                  print the version"
+  echo "        -h                                  this help message"
+  echo "        -l [workers|tasks|filters]          list the status"
+  echo "        -r [manager|worker]                 run service"
+  echo "        -s [manager|worker]                 stop service"
+  echo "        -c [manager|worker]                 check if the service is running"
+}
+
+if [ $# = 0 ]; then
+  print_usage
+  exit
+fi
+
+while getopts "vhfc:r:l:s:" optname
+  do
+    case "$optname" in
+      "v")
+        echo $version
+        exit
+        ;;
+      "h")
+        print_usage
+        exit
+        ;;
+      "l")
+        list_op="java"
+        list_para=$OPTARG
+        case $OPTARG in
+            workers|filters|tasks)
+                java -cp $CLAND_PATH:cland.jar com.rynuk.cland.service.local.ShellBootstrap list$OPTARG
+                exit $?
+            ;;
+            *)
+                echo "Unknown option $OPTARG"
+                exit 1
+            ;;
+        esac
+        ;;
+      #TODO
+      "f")
+        if [ "$list_op" == "" ] ; then
+            echo "Unknown option $OPTARG"
+        else
+            echo $list_para
+        fi
+        ;;
+      "r")
+        case $OPTARG in
+            manager)
+                nohup java -cp $CLAND_PATH:cland.jar com.rynuyk.cland.clandMain >./manager.log 2>&1 &
+                echo "Trying to start manager service, it should take a while"
+                echo "after you could use 'jps' to check if 'clandMain' has started. "
+                echo "for more details you should to check out logs."
+                exit
+            ;;
+            worker)
+                nohup java -cp $CLAND_PATH:cland.jar com.rynuyk.cland.clandServer >./worker.log 2>&1 &
+                echo "Trying to start worker service, it should take a while"
+                echo "after you could use 'jps' to check if 'clandServer' has started. "
+                echo "for more details you should to check out logs."
+                exit
+            ;;
+            *)
+                echo "Unknown option $OPTARG"
+                exit 1
+            ;;
+        esac
+        ;;
+      "s")
+        case $OPTARG in
+            manager)
+                pid=`jps | grep  clandMain | grep -o '[0-9]*'`
+                if [ "$pid" == "" ] ; then
+                    echo "manager service isn't running"
+                else
+                    kill $pid >/dev/null 2>&1
+                    echo "stoping manager service"
+                    sleep $max_stop_time
+                    if kill -0 $pid > /dev/null 2>&1; then
+                        echo "command did not stop gracefully after $max_stop_time seconds: killing with kill -9"
+                        kill -9 $pid > /dev/null 2>&1
+                    fi
+                fi
+                exit
+            ;;
+            worker)
+                pid=`jps | grep  clandServer | grep -o '[0-9]*'`
+                if [ "$pid" == "" ] ; then
+                    echo "worker service isn't running"
+                else
+                    kill $pid > /dev/null 2>&1
+                    echo "stop server service"
+                    sleep $max_stop_time
+                    if kill -0 $pid > /dev/null 2>&1; then
+                        echo "command did not stop gracefully after $max_stop_time seconds: killing with kill -9"
+                        kill -9 $pid > /dev/null 2>&1
+                    fi
+                fi
+                exit
+                exit
+            ;;
+            *)
+                echo "Unknown option $OPTARG"
+                exit 1
+            ;;
+        esac
+        ;;
+      "c")
+        case $OPTARG in
+            manager)
+                pid=`jps | grep clandMain | grep -o '[0-9]*'`
+                if [ "$pid" == "" ] ; then
+                    echo "manager isn't working"
+                else
+                    echo "manager is working"
+                fi
+                exit
+            ;;
+            worker)
+               pid=`jps | grep clandServer | grep -o '[0-9]*'`
+               if [ "$pid" == "" ] ; then
+                   echo "worker isn't working"
+               else
+                   echo "worker is working"
+               fi
+               exit
+            ;;
+            *)
+                echo "Unknown option $OPTARG"
+                exit 1
+            ;;
+        esac
+        ;;
+      "?")
+          echo "Unknown option $OPTARG"
+	  exit 1
+        ;;
+      ":")
+          echo "No argument value for option $OPTARG"
+          exit 1
+        ;;
+      *)
+      # Should not occur
+          echo "Unknown error while processing options" 
+          exit 1
+        ;;
+    esac
+  done

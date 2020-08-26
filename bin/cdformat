@@ -1,0 +1,47 @@
+#!/bin/bash
+
+CLAND_PATH=""
+for i in "$CLAND_HOME"/lib/*.jar
+do
+    CLAND_PATH="$i:$CLAND_PATH"
+done
+CLAND_PATH=$CLAND_HOME/cland.jar:$CLAND_PATH
+export CLAND_CONF_PATH=$CLAND_HOME/conf
+
+function print_usage(){
+  echo "Usage: "
+  echo "        wvformat -n|-f   "
+  echo "        	with -n means normal initialize zookeeper and hdfs"
+  echo "        	with -f arg means force format, that will delete all old setting"
+}
+
+if [ $# = 0 ]; then
+  print_usage
+  exit
+fi
+
+while getopts "nhf" optname
+  do
+    case "$optname" in
+      h)
+        print_usage
+        exit
+      ;;
+      n)
+	java -cp $CLAND_PATH:cland.jar com.rynuyk.cland.ClusterFormatter
+	exit
+      ;;
+      f)
+	java -cp $CLAND_PATH:cland.jar com.rynuyk.cland.ClusterFormatter -f
+	exit
+      ;;
+      "?")
+        echo "Unknown option $OPTARG"
+        exit 1
+      ;;
+      *)
+        echo "Unknown error while processing options"
+        exit 1
+      ;;
+    esac
+  done
