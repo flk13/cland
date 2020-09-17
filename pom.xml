@@ -130,6 +130,4 @@
             <version>${curator.version}</version>
         </dependency>
     </dependencies>
-
-
 </project>
