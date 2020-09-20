@@ -61,8 +61,8 @@ public class BloomFileInfo {
     }
 
     /**
-     * bloom过滤器的缓存文件的名字中包含着最大容量
-     * 具体的值被 #_ 和 # 包裹起来
+     * bloom过滤器的缓存文件的名字中包含着已经录入元素的数量
+     * 具体的值被 # 和 # 包裹起来
      *
      * @param bloomFileName bloom缓存文件的名字
      */
@@ -83,8 +83,9 @@ public class BloomFileInfo {
     }
 
     /**
-     * bloom过滤器的缓存文件的名字中包含着已经录入元素的数量
-     * 具体的值被 # 和 # 包裹起来
+     * bloom过滤器的缓存文件的名字中包含着最大容量
+     * 具体的值被 #_ 和 # 包裹起来
+     
      *
      * @param bloomFileName bloom缓存文件的名字
      */
