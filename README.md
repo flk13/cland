@@ -1,7 +1,7 @@
-# crawland
-Crawland is a scheduler center for distributed crawlers with Zookeeper and HDFS.
+# crenter
+Crenter is a scheduler center for distributed crawlers with Zookeeper and HDFS.
 
-更多设计方法和说明请查看[博客](https://rynuk.xyz/cland-zk-hdfs.html)
+更多设计方法和说明请查看[博客](https://mapleuz.cc/project-crenter)
 
 ## 依赖
 
