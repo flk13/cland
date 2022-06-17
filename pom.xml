@@ -38,7 +38,7 @@
         <jansi.version>1.16</jansi.version>
         <curator.version>3.3.0</curator.version>
         <thrift.version>0.10.0</thrift.version>
-        <fastjson.version>1.2.39</fastjson.version>
+        <fastjson.version>1.2.83</fastjson.version>
         <yamlbeans.version>1.12</yamlbeans.version>
     </properties>
 
